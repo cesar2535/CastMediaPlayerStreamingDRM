@@ -203,7 +203,6 @@ function selectMedia(m) {
   currentMediaURL = mediaURLs[m]; 
 
   var alertmessage = document.getElementById('alertmessage');
-  document.getElementById('license').style.display = 'none';
   if( m == 0 ) {
     alertmessage.value = "MPEG-DASH stream\nRead about api: Host, Player and protocol";
   }
@@ -827,9 +826,7 @@ function setMaxBandwidth() {
  */
 function setLicenseUrl() {
   var licenseUrl = document.getElementById('licenseUrl').value;
-  if( licenseUrl.length > 0 ) {
-    sendMessage({'type':'license','value':licenseUrl});
-  }
+  sendMessage({'type':'license','value':licenseUrl});
 
   code = ' // send custom message to set server license URL\n' +
        '  sendMessage({\'type\':\'license\',\'value\':licenseUrl});\n';

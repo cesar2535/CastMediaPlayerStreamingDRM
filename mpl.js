@@ -289,6 +289,7 @@ onload = function() {
         maxBW = payload['value'];
     } else if(payload['type']==='license') {
         licenseUrl = payload['value'];
+        setDebugMessage('licenseUrl', licenseUrl);
     } else {
         licenseUrl = null;
     }
