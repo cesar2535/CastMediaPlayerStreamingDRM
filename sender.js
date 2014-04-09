@@ -156,7 +156,45 @@ function onReceiverMessage(namespace, message) {
       captions_div.appendChild(input);
     }
     document.getElementById('instream_caption_div').style.display = 'block';
-  } 
+  } else if( messageJSON['video_bitrates'] ) {
+    var video_bitrates = messageJSON['video_bitrates'];
+    video_bitrates_div.innerHTML = 'Video Bitrates:';
+    for (var i in video_bitrates) {
+      var input = document.createElement('input');
+      input.type = 'submit';
+      input.onclick = (function() {
+        var currentI = i;
+        return function() { 
+          setQualityLevel(currentI, 'video');
+        };
+      })();
+      input.value = video_bitrates[i];
+      input.style.fontSize='5px';
+      input.style.margin='3px';
+      video_bitrates_div.appendChild(input);
+    }
+  } else if( messageJSON['audio_bitrates'] ) {
+    var audio_bitrates = messageJSON['audio_bitrates'];
+    audio_bitrates_div.innerHTML = 'Audio Bitrates:';
+    for (var i in audio_bitrates) {
+      var input = document.createElement('input');
+      input.type = 'submit';
+      input.onclick = (function() {
+        var currentI = i;
+        return function() { 
+          setQualityLevel(currentI, 'audio');
+        };
+      })();
+      input.value = audio_bitrates[i];
+      input.style.fontSize='5px';
+      input.style.margin='3px';
+      audio_bitrates_div.appendChild(input);
+    }
+  }
+}
+
+/**
+  }
 }
 
 /**
@@ -228,6 +266,9 @@ function selectMedia(m) {
   else {
   }
   
+  // reset video and audio quality index
+  sendMessage({'type':'qualityIndex','value':-1, 'mediaType':'video'});
+  sendMessage({'type':'qualityIndex','value':-1, 'mediaType':'audio'});
 }
 
 
@@ -605,6 +646,81 @@ function liveStreaming(cb) {
 }
 
 /**
+ * enable/disable useCredentials
+ * @param {DOM Object} cb A checkbox element
+ */
+function useCredentialsSegment(cb) {
+  if( cb.checked == true ) {
+    sendMessage({'type':'segmentCredentials','value':true});
+  }
+  else {
+    sendMessage({'type':'segmentCredentials','value':false});
+  } 
+  code = ' // send custom message to set segmentCredentials to true\n' +
+       '  sendMessage({\'type\':\'segmentCredentials\',\'value\':true});\n' +
+       '  // receiver sets segmentCredentials flag to true';
+  showCodeSnippet(code, 'sender');
+
+  code = '  if( segmentCredentials ) {\n' + 
+    '    mediaHost.updateSegmentRequestInfo = function(requestInfo) {\n' + 
+    '      requestInfo.withCredentials = true;\n' + 
+    '    };\n' + 
+    '  }';
+  showCodeSnippet(code, 'receiver');
+}
+
+/**
+ * enable/disable useCredentials
+ * @param {DOM Object} cb A checkbox element
+ */
+function useCredentialsManifest(cb) {
+  if( cb.checked == true ) {
+    sendMessage({'type':'manifestCredentials','value':true});
+  }
+  else {
+    sendMessage({'type':'manifestCredentials','value':false});
+  } 
+  code = ' // send custom message to set credentials to true\n' +
+       '  sendMessage({\'type\':\'manifestcredentials\',\'value\':true});\n' +
+       '  // receiver sets manifestCredentials flag to true';
+  showCodeSnippet(code, 'sender');
+
+  code = '  if( manifestCredentials ) {\n' + 
+    '    mediaHost.updateManifestRequestInfo = function(requestInfo) {\n' + 
+    '      if (!requestInfo.url) {\n' +
+    '        requestInfo.url = url;\n' +
+    '      }\n' +
+    '      requestInfo.withCredentials = true;\n' + 
+    '    };\n' + 
+    '  }';
+  showCodeSnippet(code, 'receiver');
+}
+
+/**
+ * enable/disable useCredentials
+ * @param {DOM Object} cb A checkbox element
+ */
+function useCredentialsLicense(cb) {
+  if( cb.checked == true ) {
+    sendMessage({'type':'licenseCredentials','value':true});
+  }
+  else {
+    sendMessage({'type':'licenseCredentials','value':false});
+  } 
+  code = ' // send custom message to set licenseCredentials to true\n' +
+       '  sendMessage({\'type\':\'licenseCredentials\',\'value\':true});\n' +
+       '  // receiver sets licenseCredentials flag to true';
+  showCodeSnippet(code, 'sender');
+
+  code = '  if( licenseCredentials ) {\n' + 
+    '    mediaHost.updateLicenseRequestInfo = function(requestInfo) {\n' + 
+    '      requestInfo.withCredentials = true;\n' + 
+    '    };\n' + 
+    '  }';
+  showCodeSnippet(code, 'receiver');
+}
+
+/**
  * mute media
  * @param {DOM Object} cb A checkbox element
  */
@@ -819,6 +935,30 @@ function setMaxBandwidth() {
   showCodeSnippet(code, 'receiver');
 }
 
+/**
+ * send a custom message to receiver
+ */
+function setQualityLevel(qualityIndex, mediaType) {
+  sendMessage({'type':'qualityIndex','value':qualityIndex, 'mediaType':mediaType});
+
+/*
+  code = ' // send custom message to set server license URL\n' +
+       '  sendMessage({\'type\':\'license\',\'value\':licenseUrl});\n';
+  showCodeSnippet(code, 'sender');
+
+  code = '  // save original and override updateLicenseRequestInfo\n' +
+       '  mediaHost[\'Orig\'] = mediaHost.updateLicenseRequestInfo;\n' +
+       '  mediaHost.updateLicenseRequestInfo = function(requestInfo) {\n' +
+       '    mediaHost.licenseUrl = licenseUrl;\n' +
+       '    mediaHost[\'Orig\'](requestInfo);\n' +
+       '  }\n' + 
+       '  // Watch \'Media Host State\' for error if incorrect license URL'; 
+  showCodeSnippet(code, 'receiver');
+*/
+}
+
+/**
+ * send a custom message to receiver so that
 /**
  * send a custom message to receiver
  * so that it will override updateLicenseRequest

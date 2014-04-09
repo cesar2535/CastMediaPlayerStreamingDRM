@@ -15,8 +15,16 @@
 var senders = {};
 var liveStreaming = false;
 var maxBW = null;
-var videoStreamIndex = null;
+var videoStreamIndex = -1;
+var audioStreamIndex = -1;
 var licenseUrl = null;
+var videoQualityIndex = null;
+var audioQualityIndex = null;
+var manifestCredentials = false;
+var segmentCredentials = false;
+var licenseCredentials = false;
+var streamVideoBitrates;
+var streamAudioBitrates;
 
 var castReceiverManager = null;
 var mediaManager = null;
@@ -55,9 +63,7 @@ onload = function() {
     var streamCount = protocol.getStreamCount();
     var streamInfo;
     var streamVideoCodecs;
-    var streamVideoBitrates;
     var streamAudioCodecs;
-    var streamAudioBitrates;
     var captions = {};
     for (var c = 0; c < streamCount; c++) {
       streamInfo = protocol.getStreamInfo(c);
@@ -65,36 +71,57 @@ onload = function() {
         captions[c] = streamInfo.language;
       } else if( streamInfo.mimeType === 'video/mp4' || streamInfo.mimeType === 'video/mp2t' ) {
         streamVideoCodecs = streamInfo.codecs;
-        streamVideoBitrates = JSON.stringify(streamInfo.bitrates);
+        streamVideoBitrates = streamInfo.bitrates;
         if( maxBW ) {
-          var qLevel = protocol.getQualityLevel(c, maxBW);
+          var videoLevel = protocol.getQualityLevel(c, maxBW);
         }
         else {
-          var qLevel = protocol.getQualityLevel(c);
+          var videoLevel = protocol.getQualityLevel(c);
         }
-        setDebugMessage('streamVideoQuality', streamInfo.bitrates[qLevel]);
+        setDebugMessage('streamVideoQuality', streamInfo.bitrates[videoLevel]);
         videoStreamIndex = c;
         setDebugMessage('videoStreamIndex', videoStreamIndex);
       } else if( streamInfo.mimeType === 'audio/mp4' ) {
+        audioStreamIndex = c;
+        setDebugMessage('audioStreamIndex', audioStreamIndex);
         streamAudioCodecs = streamInfo.codecs;
-        streamAudioBitrates = JSON.stringify(streamInfo.bitrates);
+        streamAudioBitrates = streamInfo.bitrates;
+        var audioLevel = protocol.getQualityLevel(c);
+        setDebugMessage('streamAudioQuality', streamInfo.bitrates[audioLevel]);
       }
       else {
       }
     }
     setDebugMessage('streamCount', streamCount);
     setDebugMessage('streamVideoCodecs', streamVideoCodecs);
-    setDebugMessage('streamVideoBitrates', streamVideoBitrates);
+    setDebugMessage('streamVideoBitrates', JSON.stringify(streamVideoBitrates));
     setDebugMessage('streamAudioCodecs', streamAudioCodecs);
-    setDebugMessage('streamAudioBitrates', streamAudioBitrates);
+    setDebugMessage('streamAudioBitrates', JSON.stringify(streamAudioBitrates));
     setDebugMessage('captions', JSON.stringify(captions));
+
+    // send captions to senders
     console.log(JSON.stringify(captions));
-    var caption_message = {};
     if( Object.keys(captions).length > 0 ) {
+      var caption_message = {};
       caption_message['captions'] = captions;
+      //messageSender(senders[0], JSON.stringify(caption_message));
+      broadcast(JSON.stringify(caption_message));
     }
-    //messageSender(senders[0], JSON.stringify(caption_message));
-    broadcast(JSON.stringify(caption_message));
+
+    // send video bitrates to senders
+    if( streamVideoBitrates && Object.keys(streamVideoBitrates).length > 0 ) {
+      var video_bitrates_message = {};
+      video_bitrates_message['video_bitrates'] = streamVideoBitrates;
+      broadcast(JSON.stringify(video_bitrates_message));
+    }
+
+    // send audio bitrates to senders
+    if( streamAudioBitrates && Object.keys(streamAudioBitrates).length > 0 ) {
+      var audio_bitrates_message = {};
+      audio_bitrates_message['audio_bitrates'] = streamAudioBitrates;
+      broadcast(JSON.stringify(audio_bitrates_message));
+    }
+
     getPlayerState();
 
   });
@@ -280,6 +307,7 @@ onload = function() {
       mediaPlayer.enableCaptions(false);
       mediaPlayer.enableCaptions(true,'ttml','captions.ttml');
     } else if(payload['type']==='live') {
+    mediaManager.onGetStatus(event);
       if(payload['value']===true) {
         liveStreaming = true;
       } else {
@@ -290,6 +318,21 @@ onload = function() {
     } else if(payload['type']==='license') {
         licenseUrl = payload['value'];
         setDebugMessage('licenseUrl', licenseUrl);
+    } else if(payload['type']==='qualityIndex' && payload['mediaType']==='video') {
+        videoQualityIndex = payload['value'];
+        setDebugMessage('videoQualityIndex', videoQualityIndex);
+    } else if(payload['type']==='qualityIndex' && payload['mediaType']==='audio') {
+        audioQualityIndex = payload['value'];
+        setDebugMessage('audioQualityIndex', audioQualityIndex);
+    } else if(payload['type']==='manifestCredentials') {
+        manifestCredentials = payload['value'];
+        setDebugMessage('manifestCredentials', manifestCredentials);
+    } else if(payload['type']==='segmentCredentials') {
+        segmentCredentials = payload['value'];
+        setDebugMessage('segmentCredentials', segmentCredentials);
+    } else if(payload['type']==='licenseCredentials') {
+        licenseCredentials = payload['value'];
+        setDebugMessage('licenseCredentials', licenseCredentials);
     } else {
         licenseUrl = null;
     }
@@ -529,12 +572,51 @@ onload = function() {
         'mediaElement': mediaElement,
         'url': url
       });
+
+      if( manifestCredentials ) { 
+        mediaHost.updateManifestRequestInfo = function(requestInfo) {
+          // example of setting CORS withCredentials
+	  if (!requestInfo.url) {
+	    requestInfo.url = url;
+	  }
+          requestInfo.withCredentials = true;
+        };
+      } 
+      if( segmentCredentials ) { 
+        mediaHost.updateSegmentRequestInfo = function(requestInfo) {
+          // example of setting CORS withCredentials
+          requestInfo.withCredentials = true;
+          // example of setting headers
+          //requestInfo.headers = {};
+          //requestInfo.headers['content-type'] = 'text/xml;charset=utf-8';
+        };
+      } 
+      if( licenseCredentials ) { 
+        mediaHost.updateLicenseRequestInfo = function(requestInfo) {
+          // example of setting CORS withCredentials
+          requestInfo.withCredentials = true;
+        };
+      }
      
       if( licenseUrl ) {
         mediaHost['updateLicenseRequestInfoOrig'] = mediaHost.updateLicenseRequestInfo;
         mediaHost.updateLicenseRequestInfo = function(requestInfo) {
-          mediaHost.licenseUrl = licenseUrl;
-          mediaHost['updateLicenseRequestInfoOrig'](requestInfo); // Call on the original
+            mediaHost.licenseUrl = licenseUrl;
+            mediaHost['updateLicenseRequestInfoOrig'](requestInfo); // Call on the original
+        }
+      }
+
+      if( (videoQualityIndex != -1 && streamVideoBitrates && videoQualityIndex < streamVideoBitrates.length ) ||  
+          (audioQualityIndex != -1 && streamAudioBitrates && audioQualityIndex < streamAudioBitrates.length) ) {  
+        mediaHost['getQualityLevelOrig'] = mediaHost.getQualityLevel;
+        mediaHost.getQualityLevel = function(streamIndex, qualityLevel) {
+          if( streamIndex == videoStreamIndex && videoQualityIndex != -1 ) {
+            return videoQualityIndex;
+          } else if( streamIndex == audioStreamIndex && audioQualityIndex != -1 ) {
+            return audioQualityIndex;
+          } else {
+            return qualityLevel;
+          }
         }
       }
 

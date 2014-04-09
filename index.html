@@ -28,8 +28,6 @@ limitations under the License.
       <div style="float:left; width:45%; margin:10px;">
         <h3 style="display: inline-block">Choose a stream below or enter your own stream URL to cast</h3><br>
         <span style="font-weight:bold; color:#0000cc;">Enter custom media URL</span>: <input type="text" name="customMediaURL" value="" size="70" id="customMediaURL"><br>
-        <span style="font-weight:bold; color:#0000cc;">Enter maximum bandwidth</span>: <input type="text" id="maxBW" name="maxBW" value="200000" size="8">
-	<input type="submit" name="submitBW" value="Set Max Bandwidth" onclick="setMaxBandwidth();"> 
 	<input type="submit" name="loadCustomMeida" value="Load Custom Media" onclick="loadCustomMedia();"> 
       </div>
       <div style="float:left; width:20%; margin:20px; padding:10px; border:1px solid #000; background-color:#ccf;">
@@ -38,13 +36,30 @@ limitations under the License.
 	<input type="button" name="show" value="Show Video/Audio on TV" onclick="showVideoOnTV();"> 
 	<input type="button" name="hide" value="Hide Video/Audio on TV" onclick="hideVideoOnTV();"> 
       </div>
-      <div style="float:left; width:20%; margin:20px; padding:10px; border:1px solid #000; background-color:#ccf;">
+      <div style="float:left; width:22%; margin:20px; padding:10px; border:1px solid #000; background-color:#ccf;">
         <button style="margin:5px; font-size:110%;" onclick="launchApp()">Launch app</button>
         <button style="margin:5px; font-size:110%;" onclick="stopApp()">Stop app</button>
-        <span style="margin:5px; font-size:110%;">Live Streaming</span>
-        <input style="margin:5px; font-size:110%;" type="checkbox" onclick="liveStreaming(this);"> 
+        <span style="margin:5px; font-size:100%;">Live Streaming</span>
+        <input style="margin:5px; font-size:100%;" type="checkbox" onclick="liveStreaming(this);"> 
+        <span style="margin:5px; font-size:50%;" id="initialTimeIndexSeconds">initialTimeIndexSeconds: 0</span>
         <br>
-        <div style="margin:5px;" id="initialTimeIndexSeconds">initialTimeIndexSeconds: 0</div>
+        <div>
+        <div style="float:left;">
+        <span style="margin:5px; font-size:90%;">Use Credentials</span>
+        </div>
+        <div style="float:left;">
+        <span style="margin:5px; font-size:60%;">Manifest</span><br>
+        <input style="margin:5px; font-size:80%;" type="checkbox" onclick="useCredentialsManifest(this);"> 
+        </div>
+        <div style="float:left;">
+        <span style="margin:5px; font-size:60%;">Segment</span><br>
+        <input style="margin:5px; font-size:80%;" type="checkbox" onclick="useCredentialsSegment(this);"> 
+        </div>
+        <div style="float:left;">
+        <span style="margin:5px; font-size:60%;">License</span><br>
+        <input style="margin:5px; font-size:80%;" type="checkbox" onclick="useCredentialsLicense(this);"> 
+        </div>
+        </div>
       </div>
       <br>
       <div style="float:left; width:100%; margin:10px;">
@@ -64,7 +79,7 @@ limitations under the License.
            </div>
         </div>
  
-        <div style="float:left; width:50%; margin:5px; border:1px solid #000;">
+        <div style="float:left; width:50%; margin:5px; border:1px solid #000; height:240px;">
           <div style="border:0px solid #000; margin:5px; padding:5px; font-size:90%; float:left; display:block; width:73%;">
             <div style="font-size:100%; font-weight:bold;">Media Control</div>
             <button style="margin:5px; font-size:90%;" onclick="loadMedia()">(Re)Load Media</button>
@@ -93,18 +108,26 @@ limitations under the License.
           </div>
 
           <div style="float:left; border:0px solid #000; margin:5px; display:block; width:95%; font-size:80%;" id="caption_div">
-              <div style="float:left; margin:5px; padding:5px;">
+              <div style="float:left; margin-left:10px; padding:0px;">
                 External Captions:
 	        <input type="button" name="caption_webvtt" id="caption_webvtt" value="WebVTT" onclick="setExternalCaptions('WebVTT');"> 
 	        <input type="button" name="caption_ttml" id="caption_ttml" value="TTML" onclick="setExternalCaptions('TTML');"> 
               </div>
           </div>
-          <div style="float:left; border:0px solid #000; margin:5px; padding-right:5px; display:none; width:95%; font-size:80%;" id="instream_caption_div">
+          <div style="float:left; border:0px solid #000; margin-left:15px; display:block; width:95%; font-size:80%;" id="video_bitrates_div">Video Bitrates: </div>
+          <div style="float:left; border:0px solid #000; margin-left:15px; display:block; width:95%; font-size:80%;" id="audio_bitrates_div">Audio Bitrates: </div>
+          <div style="float:left; border:0px solid #000; margin-left:15px; padding-right:5px; display:block; width:95%; font-size:80%;">
+          <span style="font-weight:bold; color:#0000cc;">Enter maximum video bandwidth</span>: <input type="text" id="maxBW" name="maxBW" value="200000" size="8">
+	  <input type="submit" name="submitBW" value="Set Max Bandwidth" onclick="setMaxBandwidth();"> 
+          </div>
+          <div style="float:left; border:0px solid #000; margin-left:15px; padding-right:5px; display:none; width:95%; font-size:80%;" id="instream_caption_div">
               <div style="float:left; margin:5px; padding:5px;">
                 Enable in-stream captions:
               </div>
               <div style="float:left; margin:5px; padding:5px;" id="captions">
               </div>
+          </div>
+          <div style="float:left; border:0px solid #000; margin:5px; display:block; width:95%; font-size:80%;" id="instream_caption_div">
           </div>
         </div>
        </div>
