@@ -25,9 +25,9 @@ var session = null;
 var mediaURLs = [
            'http://commondatastorage.googleapis.com/gtv-videos-bucket/dash/BigBuckBunny/bunny_10s/BigBuckBunny_10s_isoffmain_url_relative_DIS_23009_1_v_2_1c2_2011_08_30.mpd',
            'http://yt-dash-mse-test.commondatastorage.googleapis.com/media/car-20120827-manifest.mpd',
-           'http://playertest.longtailvideo.com/adaptive/bbbfull/bbbfull.m3u8',
-           'http://stream.gravlab.net/003119/sparse/v1d30/posts/2014/barcelona/barcelona.m3u8',
-           'https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_16x9/bipbop_16x9_variant.m3u8',
+           'http://www.corsproxy.com/playertest.longtailvideo.com/adaptive/bbbfull/bbbfull.m3u8',
+           'http://www.corsproxy.com/stream.gravlab.net/003119/sparse/v1d30/posts/2014/barcelona/barcelona.m3u8',
+           'http://www.corsproxy.com/devimages.apple.com.edgekey.net/streaming/examples/bipbop_16x9/bipbop_16x9_variant.m3u8',
            'http://playready.directtaps.net/smoothstreaming/SSWSS720H264/SuperSpeedway_720.ism/Manifest',
            'http://playready.directtaps.net/smoothstreaming/SSWSS720H264PR/SuperSpeedway_720.ism/Manifest'];
 var mediaTitles = [
@@ -230,7 +230,7 @@ function receiverListener(e) {
   }
 }
 
-/**
+/*e
  * select a media URL 
  * @param {string} m An index for media URL
  */
@@ -248,13 +248,13 @@ function selectMedia(m) {
     alertmessage.value = "MPEG-DASH stream\nLearn more about MSE, EME and DRM";
   }
   else if( m == 2 ) {
-    alertmessage.value = "This HLS stream requires CORS e.g. a permissive crossdomain.xml file on your server\nRead more at https://developers.google.com/cast/docs/player";
+    alertmessage.value = "This HLS stream requires CORS\nRead more at https://developers.google.com/cast/docs/player\nHere http://www.corsproxy.com/ is used.";
   }
   else if( m == 3 ) {
-    alertmessage.value = "This HLS stream requires CORS that has to be enabled on your content servers or you may set up a proxy during development";
+    alertmessage.value = "This HLS stream requires CORS\nProxy server http://www.corsproxy.com/ is used";
   }
   else if( m == 4 ) {
-    alertmessage.value = "This requires CORS and has 8 in-streams captions in 4 languages that you can choose to enable";
+    alertmessage.value = "This requires CORS and has 8 in-streams captions in 4 languages that you can choose to enable\nProxy server http://www.corsproxy.com/ is used";
   }
   else if( m == 5 ) {
     alertmessage.value = "SS stream with no PlayReady DRM\nPlay with external captions in WebVTT or TTML";
