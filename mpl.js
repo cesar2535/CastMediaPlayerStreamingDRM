@@ -18,8 +18,8 @@ var maxBW = null;
 var videoStreamIndex = -1;
 var audioStreamIndex = -1;
 var licenseUrl = null;
-var videoQualityIndex = null;
-var audioQualityIndex = null;
+var videoQualityIndex = -1;
+var audioQualityIndex = -1;
 var manifestCredentials = false;
 var segmentCredentials = false;
 var licenseCredentials = false;
@@ -637,7 +637,7 @@ onload = function() {
       } else if (url.lastIndexOf('.mpd') >= 0) {
         protocol = cast.player.api.CreateDashStreamingProtocol(mediaHost);
         ext = 'MPEG-DASH';
-      } else if (url.lastIndexOf('.ism/') >= 0) {
+      } else if (url.lastIndexOf('.ism/') >= 0 || url.lastIndexOf('.isml/') >= 0) {
         protocol = cast.player.api.CreateSmoothStreamingProtocol(mediaHost);
         ext = 'Smooth Streaming';
       }
