@@ -599,10 +599,8 @@ onload = function() {
       }
      
       if( licenseUrl ) {
-        mediaHost['updateLicenseRequestInfoOrig'] = mediaHost.updateLicenseRequestInfo;
         mediaHost.updateLicenseRequestInfo = function(requestInfo) {
             mediaHost.licenseUrl = licenseUrl;
-            mediaHost['updateLicenseRequestInfoOrig'](requestInfo); // Call on the original
         }
       }
 
