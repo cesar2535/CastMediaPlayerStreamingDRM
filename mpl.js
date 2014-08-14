@@ -333,6 +333,9 @@ onload = function() {
     } else if(payload['type']==='licenseCredentials') {
         licenseCredentials = payload['value'];
         setDebugMessage('licenseCredentials', licenseCredentials);
+    } else if(payload['type']==='customData') {
+        customData = payload['value'];
+        setDebugMessage('customData', customData);
     } else {
         licenseUrl = null;
     }
@@ -352,7 +355,6 @@ onload = function() {
   * Called when the media ends
   */
   mediaManager.onEnded = function() {
-    console.log("### Media Manager - ENDED: " + JSON.stringify(event));
     setDebugMessage('mediaManagerMessage', 'ENDED');
 
     mediaManager['onEndedOrig']();
@@ -602,6 +604,13 @@ onload = function() {
         mediaHost.updateLicenseRequestInfo = function(requestInfo) {
             mediaHost.licenseUrl = licenseUrl;
         }
+      }
+
+      if (customData) {
+        mediaHost.updateLicenseRequestInfo = function(requestInfo) {
+            mediaHost.licenseCustomData=customData;
+            console.log("### customData: "+customData);
+        };
       }
 
       if( (videoQualityIndex != -1 && streamVideoBitrates && videoQualityIndex < streamVideoBitrates.length ) ||  
