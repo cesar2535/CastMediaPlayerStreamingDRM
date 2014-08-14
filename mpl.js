@@ -607,10 +607,8 @@ onload = function() {
       }
 
       if (customData) {
-        mediaHost.updateLicenseRequestInfo = function(requestInfo) {
-            mediaHost.licenseCustomData=customData;
-            console.log("### customData: "+customData);
-        };
+        mediaHost.licenseCustomData=customData;
+        console.log("### customData: "+customData);
       }
 
       if( (videoQualityIndex != -1 && streamVideoBitrates && videoQualityIndex < streamVideoBitrates.length ) ||  
