@@ -41,7 +41,7 @@ limitations under the License.
         <button style="margin:5px; font-size:110%;" onclick="stopApp()">Stop app</button>
         <br>
         <span style="margin:5px; font-size:100%;">Live Streaming</span>
-        <input style="margin:5px; font-size:100%;" type="checkbox" onclick="liveStreaming(this);"> 
+        <input id="liveFlag" style="margin:5px; font-size:100%;" type="checkbox" onclick="liveStreaming(this);"> 
         <span style="margin:5px; font-size:50%;" id="initialTimeIndexSeconds">initialTimeIndexSeconds: 0</span>
         <br>
         <div>
@@ -67,15 +67,16 @@ limitations under the License.
         <div style="margin:0px; float:left; width:45%;">
            <input type="radio" name="media" onclick="selectMedia(0);" checked><b>MPEG-DASH</b>: Big Buck Bunny .mpd<br>
            <input type="radio" name="media" onclick="selectMedia(1);"><b>MPEG-DASH</b>: CAR .mpd<br>
-           <input type="radio" name="media" onclick="selectMedia(2);"><b>HLS</b>: Big Buck Bunny .m3u8<br>
-           <input type="radio" name="media" onclick="selectMedia(3);"><b>HLS</b>: GravLab .m3u8<br>
+           <input type="radio" name="media" onclick="selectMedia(2);"><b>MPEG-DASH with Widevine</b>: Tears of Steel: .mpd<br>
+           <input type="radio" name="media" onclick="selectMedia(3);"><b>HLS</b>: Big Buck Bunny .m3u8<br>
            <input type="radio" name="media" onclick="selectMedia(4);"><b>HLS</b>: Bip Bop .m3u8 stream by Apple<br>
            <input type="radio" name="media" onclick="selectMedia(5);"><b>Smooth Streaming</b>: Super Speedway .ism<br>
            <input type="radio" name="media" onclick="selectMedia(6);"><b>Smooth Streaming with PlayReady</b>: Super Speedway .ism<br>
+           <input type="radio" name="media" onclick="selectMedia(7);"><b>HLS Live Streaming</b>: PressTV .ism<br>
            <div style="margin:5px 25px 5px 5px; padding:5px; float:left;">
              <textarea rows="3" cols="50" id="alertmessage" style="font-size:110%; background-color:#ffc;">MPEG-DASH stream
              </textarea>
-             <div id="license" style="display:block;font-size:80%;"><span style="font-weight:bold; color:#0000cc;">URL</span>: <input type="text" id="licenseUrl" name="licenseUrl" value="http://playready.directtaps.net/pr/svc/rightsmanager.asmx" size="70">
+             <div id="license" style="display:block;font-size:80%;"><span style="font-weight:bold; color:#0000cc;">URL</span>: <input type="text" id="licenseUrl" name="licenseUrl" value="license server url when DRM is required" size="70">
 	     <input type="submit" name="submitLicenseUrl" value="Set License Server URL" onclick="setLicenseUrl();"></div>
              <div id="customDataDiv" style="display:block;font-size:80%;"><span style="font-weight:bold; color:#0000cc;">Custom Data</span>: <input type="text" id="customData" name="customData" value="" size="60">
 	     <input type="submit" name="submitLicenseUrl" value="Set Custom Data" onclick="setLicenseCustomData();"></div>

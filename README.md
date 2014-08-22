@@ -4,10 +4,12 @@
 This Google Cast sample app demonstrates how to play streaming media on Chromecast.  It uses Cast Receiver SDK and Media Player Library.  It highlights the following features.
 
 * Streaming: MPEG-DASH, Smooth Streaming, and HLS
+* DRM: PlayReady and Widevine
 * Enable live streaming
 * Captions: external and in-stream
 * Adaptive Bitrate Streaming
 * DRM license server URL
+* Support for customData of license server
 * CORS and cross domain policy
  
 It uses a Chrome sender but can work with Android or iOS senders as well.  It also provides debugging features with live code snippets to illustrate interactions between sender and receiver.  
@@ -23,8 +25,8 @@ It uses a Chrome sender but can work with Android or iOS senders as well.  It al
  
 # Steps to setup:
 1. Put all files on your own server
-2. Change YOUR_APP_ID in sender.js to your own application ID
-3. Point your receiver app URL in Developer Console to http://[YOUR_SERVER_LOCATION]/CastMediaPlayerStreamingDRM/mpl.html
+2. Change YOUR_APP_ID in sender.js to your own application ID from your Developer Console account
+3. Point your corresponding receiver app URL to http://[YOUR_SERVER_LOCATION]/CastMediaPlayerStreamingDRM/mpl.html
 4. Open a browser and point to your page at http://[YOUR_SERVER_LOCATION]/CastMediaPlayerStreamingDRM/index.html
 
 # Instructions:
@@ -39,10 +41,14 @@ It uses a Chrome sender but can work with Android or iOS senders as well.  It al
   * Media Player: Host, Protocol, Player
   * Streams: bitrates, codecs, captions
 * Experiment on sender side:
+  * Load different streams of DASH, SS with/without DRM
+  * Note some of the streams require CORS before they can play
+  * Load your own custom stream
   * Enable live streaming
   * Set max bandwidth
   * Set custom license server URL
   * Enable/Disable captions
+  * Set license customData
   * Inspect code snippets live
 
 ##Documentation
