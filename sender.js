@@ -34,7 +34,7 @@ var MESSAGE_NAMESPACE = 'urn:x-cast:com.google.cast.sample.mediaplayer';
 var mediaURLs = [
     'http://commondatastorage.googleapis.com/gtv-videos-bucket/dash/BigBuckBunny/bunny_10s/BigBuckBunny_10s_isoffmain_url_relative_DIS_23009_1_v_2_1c2_2011_08_30.mpd',
     'http://yt-dash-mse-test.commondatastorage.googleapis.com/media/car-20120827-manifest.mpd',
-    'http://storage.googleapis.com/wvmedia/cenc/tears.mpd',
+    'http://storage.googleapis.com/gtv-videos-bucket/dash/CarWidevine/car.mpd',
     'http://playertest.longtailvideo.com/adaptive/bbbfull/bbbfull.m3u8',
     'http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_16x9/bipbop_16x9_variant.m3u8',
     'http://playready.directtaps.net/smoothstreaming/SSWSS720H264/SuperSpeedway_720.ism/Manifest',
@@ -47,7 +47,7 @@ var mediaURLs = [
 var mediaTitles = [
     'Big Buck Bunny DASH',
     'Public DASH: CAR',
-    'Tear of Steel DASH Widevine',
+    'Car DASH Widevine',
     'Big Buck Bunny HLS',
     'Apple HLS',
     'Super Speedway SS',
